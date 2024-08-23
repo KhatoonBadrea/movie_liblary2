@@ -6,9 +6,9 @@ use App\Models\Movie;
 
 class MovieService
 {
-    public function getAllMovie()
+    public function getAllMovie(int $perPage)
     {
-        return Movie::all();
+        return Movie::paginate($perPage);
     }
 
     public function createMovie(array $data)
@@ -16,8 +16,9 @@ class MovieService
         return Movie::create($data);
     }
 
-    
-    public function updateMovie(Movie $movie, $data){
+
+    public function updateMovie(Movie $movie, $data)
+    {
 
         return $movie->update($data);
     }
@@ -27,4 +28,14 @@ class MovieService
     {
         return $movie->delete();
     }
+
+    public function filterMovie($data)
+    {
+        return Movie::where('gener', $data)->orwhere('director', $data)->get();
+    }
+
+    // public function getMoviesOrderedByReleaseYear()
+    // {
+    //     return Movie::orderBy('release_year', 'asc');
+    // }
 }
