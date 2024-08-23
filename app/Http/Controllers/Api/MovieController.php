@@ -110,8 +110,8 @@ class MovieController extends Controller
         try {
 
             $validationdata = $request->validated();
-            $movie = $this->movieServices->updateMovie($movie, $validationdata);
-            return $this->successResponse('successefuly added the movie', $movie, 201);
+            $newMovie = $this->movieServices->updateMovie($movie, $validationdata);
+            return $this->successResponse('successefuly edite the movie', $newMovie, 201);
         } catch (\Exception $e) {
             Log::error('Error in MovieController@update' . $e->getMessage());
             return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);

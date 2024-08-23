@@ -20,7 +20,8 @@ class MovieService
     public function updateMovie(Movie $movie, $data)
     {
 
-        return $movie->update($data);
+        $movie->update($data);
+        return $movie;
     }
 
 
