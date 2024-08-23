@@ -22,6 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('movies', MovieController::class);
 
 Route::get('filter', [MovieController::class, 'filter']);
-Route::get('sorting', [MovieController::class, 'getMoviesOrdered']);
+Route::get('sorting', [MovieController::class, 'sorting']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);

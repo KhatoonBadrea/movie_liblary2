@@ -8,6 +8,7 @@ use App\Services\MovieService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponseTrait;
+use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\StoreMovieRequest;
 use App\Http\Requests\FilterMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
@@ -21,29 +22,31 @@ class MovieController extends Controller
     protected $movieServices;
 
     /**
-     * constractur
-     * @param App\Services\
+     * constractur to inject Movie Service Class
+     * @param MovieService $movieServices
      */
     public function __construct(MovieService $movieServices)
     {
+        //injecting the Movie Service into controller 
         $this->movieServices = $movieServices;
-        $this->middleware('auth:sanctum')->except(['index', 'filter', 'getMoviesOrdered']);
+
+        $this->middleware('auth:sanctum')->except(['index', 'filter', 'sorting']);
     }
 
 
     // ============================================index==============================================================================
     /**
      * Display a listing of the movies.
-     * @return /illuminat/http/json
+     * @param  PaginationRequest $request
+     * @return /illuminat\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(PaginationRequest $request)
     {
         try {
 
-            // الحصول على عدد العناصر في الصفحة من الـ request، القيمة الافتراضية 10 إذا لم يتم تحديدها
+            //per_page is the key that you should put it in the parameter of the request on postman
             $perPage = $request->input('per_page', 10);
 
-            // تمرير $perPage إلى خدمة MovieService
             $movies = $this->movieServices->getAllMovie($perPage);
 
             $movies = movieResource::collection($movies);
@@ -67,8 +70,8 @@ class MovieController extends Controller
 
     /**
      * Store a newly created movie in storage.
-     * @param App\Http\Requests\StoreMovieRequest\
-     * @return /illuminat/http/json
+     * @param StoreMovieRequest $request
+     * @return /illuminat\Http\JsonResponse
      */
     public function store(StoreMovieRequest $request)
     {
@@ -97,9 +100,9 @@ class MovieController extends Controller
 
     /**
      * Update the specified movie in storage.
-     * @param App\Http\Requests\UpdateMovieRequest\
-     * @param  App\Models\Movie\
-     * @return /illuminat/http/json
+     * @param  UpdateMovieRequest $request
+     * @param  Movie $movie
+     * @return /illuminat\Http\JsonResponse
      */
     public function update(UpdateMovieRequest $request, Movie $movie)
     {
@@ -121,8 +124,8 @@ class MovieController extends Controller
 
     /**
      * Remove the specified movie from storage.
-     * @param  App\Models\Movie\
-     * @return /illuminat/http/json
+     * @param  Movie $movie
+     * @return /illuminat\Http\JsonResponse
      */
     public function destroy(Movie $movie)
     {
@@ -143,8 +146,8 @@ class MovieController extends Controller
 
     /**
      * filter the movie by director or gener
-     * @param App\HTTP\Request\FilterMovieRequest\
-     * @return /illuminat/http/json
+     * @param FilterMovieRequest $request
+     * @return /illuminat\Http\JsonResponse
      */
     public function filter(FilterMovieRequest $request)
     {
@@ -165,25 +168,30 @@ class MovieController extends Controller
     }
 
 
-    //===========================================getMoviesOrdered============================================================================================================================================
+    //===========================================sorting============================================================================================================================================
 
 
+    /**
+     * sort the movie order by release year asc
+     * @return /illuminat\Http\JsonResponse
+     */
+    public function sorting()
+    {
+        try {
+            $movies = $this->movieServices->OrderedByReleaseYear();
 
-    // public function getMoviesOrdered()
-    // {
-    //     try {
-    //         $movies = Movie::orderBy('release_year', 'asc');
 
-    //         $movies = movieResource::collection($movies);
-    //         return $movies;
-    //         // if ($movies->isNotEmpty()) {
-    //         //     return $this->successResponse('Movies ordered by release year', $movies, 200);
-    //         // } else {
-    //         //     return $this->notFound('There are not any movies!');
-    //         // }
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in MovieController@getMoviesOrderedByReleaseYear: ' . $e->getMessage());
-    //         return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);
-    //     }
-    // }
+            $movies = movieResource::collection($movies);
+
+            if ($movies->isNotEmpty()) {
+
+                return $this->successResponse('Movies ordered by release year', $movies, 200);
+            } else {
+                return $this->notFound('There are not any movies!');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error in MovieController@sorting: ' . $e->getMessage());
+            return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);
+        }
+    }
 }

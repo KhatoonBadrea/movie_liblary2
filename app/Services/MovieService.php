@@ -34,8 +34,8 @@ class MovieService
         return Movie::where('gener', $data)->orwhere('director', $data)->get();
     }
 
-    // public function getMoviesOrderedByReleaseYear()
-    // {
-    //     return Movie::orderBy('release_year', 'asc');
-    // }
+    public function OrderedByReleaseYear()
+    {
+        return Movie::orderBy('release_year', 'asc')->get();
+    }
 }
