@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMovieRequest extends FormRequest
+class StoreRatingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,10 @@ class StoreMovieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'director' => 'required|string|max:100',
-            'gener' => 'required|string',
-            'release_year' => 'required|integer|between:1970,2024',
-            'description' => 'required|string',
+            'user_id' => 'required|exists:users,id',
+            'movie_id' => 'required|exists:movies,id',
+            'rating' => 'required|integer|between:1,5',
+            'review' => 'nullable|string|max:255',
         ];
     }
 }

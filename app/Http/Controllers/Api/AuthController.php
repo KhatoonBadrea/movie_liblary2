@@ -22,8 +22,8 @@ class AuthController extends Controller
     }
 
     /**
-     * Get a JWT via given credentials.
-     *
+     *login the user and get the sanctum token
+     
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
@@ -65,15 +65,7 @@ class AuthController extends Controller
         ], status: 201);
     }
 
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
-    {
-        return response()->json(auth()->user());
-    }
+  
 
     /**
      * Log the user out (Invalidate the token).
@@ -87,29 +79,4 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // public function refresh()
-    // {
-    //     return $this->respondWithToken(auth()->refresh());
-    // }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // protected function respondWithToken($token)
-    // {
-    //     return response()->json([
-    //         'access_token' => $token,
-    //         'token_type' => 'bearer',
-    //         'expires_in' => auth()->factory()->getTTL() * 60
-    //     ]);
-    // }
 }

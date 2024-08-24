@@ -23,10 +23,10 @@ class UpdateMovieRequest extends FormRequest
     {
 
         return [
-            'title' => 'required|string',
-            'director' => 'required|string',
+            'title' => 'required|string|max:255',
+            'director' => 'required|string|max:100',
             'gener' => 'required|string',
-            'release_year' => 'required',
+            'release_year' => 'required|integer|between:1970,2024',
             'description' => 'required|string',
         ];
     }

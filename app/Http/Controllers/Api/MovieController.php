@@ -13,6 +13,7 @@ use App\Http\Requests\StoreMovieRequest;
 use App\Http\Requests\FilterMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
 use App\Http\Resources\Resources\movieResource;
+use App\Http\Requests\StoreRatingRequest;
 
 
 class MovieController extends Controller
@@ -38,23 +39,32 @@ class MovieController extends Controller
     /**
      * Display a listing of the movies.
      * @param  PaginationRequest $request
-     * @return /illuminat\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(PaginationRequest $request)
     {
         try {
-
-            //per_page is the key that you should put it in the parameter of the request on postman
+            // عدد العناصر لكل صفحة
             $perPage = $request->input('per_page', 10);
 
-            $movies = $this->movieServices->getAllMovie($perPage);
+            // الحصول على معايير الفرز
+            $sortBy = $request->input('sort_by', 'release_year');
+            $sortOrder = $request->input('sort_order', 'asc');
 
+            // الحصول على معايير الفلترة
+            $filterBy = $request->input('filter_by');
+            $filterValue = $request->input('filter_value');
+
+            // استدعاء الخدمة للحصول على الأفلام مع تطبيق الفلترة والفرز
+            $movies = $this->movieServices->getMovies($perPage, $sortBy, $sortOrder, $filterBy, $filterValue);
+
+            // تحويل النتائج إلى مورد (Resource)
             $movies = movieResource::collection($movies);
 
             if ($movies->isNotEmpty()) {
-                return $this->successResponse('This is all movies', $movies, 200);
+                return $this->successResponse('Movies list', $movies, 200);
             } else {
-                return $this->notFound('There are not any movies!');
+                return $this->notFound('No movies found!');
             }
         } catch (\Exception $e) {
             Log::error('Error in MovieController@index: ' . $e->getMessage());
@@ -65,13 +75,15 @@ class MovieController extends Controller
 
 
 
+
+
     //===========================================store============================================================================================================================================
 
 
     /**
      * Store a newly created movie in storage.
      * @param StoreMovieRequest $request
-     * @return /illuminat\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreMovieRequest $request)
     {
@@ -91,6 +103,7 @@ class MovieController extends Controller
      */
     public function show(Movie $movie)
     {
+
         //
     }
 
@@ -102,7 +115,7 @@ class MovieController extends Controller
      * Update the specified movie in storage.
      * @param  UpdateMovieRequest $request
      * @param  Movie $movie
-     * @return /illuminat\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateMovieRequest $request, Movie $movie)
     {
@@ -111,7 +124,7 @@ class MovieController extends Controller
 
             $validationdata = $request->validated();
             $newMovie = $this->movieServices->updateMovie($movie, $validationdata);
-            return $this->successResponse('successefuly edite the movie', $newMovie, 201);
+            return $this->successResponse('successefuly edite the movie', $newMovie, 200);
         } catch (\Exception $e) {
             Log::error('Error in MovieController@update' . $e->getMessage());
             return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);
@@ -125,14 +138,14 @@ class MovieController extends Controller
     /**
      * Remove the specified movie from storage.
      * @param  Movie $movie
-     * @return /illuminat\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Movie $movie)
     {
         try {
 
             $movie = $this->movieServices->deleteMovie($movie);
-            return $this->successResponse('successefully deleted', 200);
+            return $this->successResponse('successefully deleted', 204);
         } catch (\Exception $e) {
             Log::error('Error in MovieController@destroy' . $e->getMessage());
             return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);
@@ -147,7 +160,7 @@ class MovieController extends Controller
     /**
      * filter the movie by director or gener
      * @param FilterMovieRequest $request
-     * @return /illuminat\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function filter(FilterMovieRequest $request)
     {
@@ -173,7 +186,7 @@ class MovieController extends Controller
 
     /**
      * sort the movie order by release year asc
-     * @return /illuminat\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function sorting()
     {
@@ -191,6 +204,24 @@ class MovieController extends Controller
             }
         } catch (\Exception $e) {
             Log::error('Error in MovieController@sorting: ' . $e->getMessage());
+            return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);
+        }
+    }
+
+
+
+
+
+
+    public function rateMovie(StoreRatingRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $data['user_id'] = auth()->id();  // تأكد أن المستخدم مسجل دخول
+            $rating = $this->movieServices->rateMovie($data);
+            return $this->successResponse('Rating added successfully', $rating, 201);
+        } catch (\Exception $e) {
+            Log::error('Error in MovieController@rateMovie: ' . $e->getMessage());
             return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);
         }
     }

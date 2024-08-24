@@ -16,12 +16,27 @@ use App\Http\Controllers\Api\MovieController;
 |
 */
 
+Route::post('movies/{movie}/rate', [MovieController::class, 'rateMovie'])->middleware('auth:sanctum');
+
+// استرجاع معلومات المستخدم المسجل
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// تسجيل المسارات الأساسية للأفلام
 Route::apiResource('movies', MovieController::class);
 
-Route::get('filter', [MovieController::class, 'filter']);
-Route::get('sorting', [MovieController::class, 'sorting']);
-Route::post('login', [AuthController::class, 'login']);
+// تقييم فيلم معين
+
+
+
+
+Route::post('test-post', function () {
+    return response()->json(['message' => 'POST method is working']);
+});
+
+
+// مسارات تسجيل الدخول والتسجيل وتسجيل الخروج
 Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout']);

@@ -16,4 +16,11 @@ class Movie extends Model
         'release_year',
         'description'
     ];
+    
+//=============relations
+
+    public function ratings()
+{
+    return $this->hasMany(Rating::class);
+}
 }
