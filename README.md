@@ -1,3 +1,10 @@
+Project description:
+Film library :
+The average user can view a list of all movies, in addition, he can filter by the name of the director or the genre of the movie, as well as arrange the movies by year of release, ascending or descending
+The logged-in user can create, edit, delete, rate and add a movie to the favorites list
+
+collection or postman:
+https://documenter.getpostman.com/view/37831879/2sAXjF9EzS
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
