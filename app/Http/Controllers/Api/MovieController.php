@@ -222,7 +222,7 @@ class MovieController extends Controller
                 return response()->json(['message' => $result], 200);
             }
 
-            return response()->json(['message' => 'Movie added to favorites successfully.'], 201);
+            return response()->json(['message' => 'Done'], 201);
         } catch (\Exception $e) {
             Log::error('Error in MovieService@addToFavorites: ' . $e->getMessage());
 
