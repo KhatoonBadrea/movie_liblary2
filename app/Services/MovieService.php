@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Movie;
 use App\Models\Rating;
+use App\Models\Favourite;
 
 class MovieService
 {
@@ -26,8 +27,9 @@ class MovieService
     {
         return Movie::create($data);
     }
-//
-//
+
+
+
     public function updateMovie(Movie $movie, $data)
     {
         $movie->update($data);
@@ -44,5 +46,23 @@ class MovieService
     public function rateMovie(array $data)
     {
         return Rating::create($data);
+    }
+
+    public function addToFavorites($userId, $movieId)
+    {
+        // Check if the movie is already in the user's favorites
+        $favorite = Favourite::where('user_id', $userId)
+            ->where('movie_id', $movieId)
+            ->first();
+
+        if ($favorite) {
+            return $favorite->delete();
+        }
+
+        // Add the movie to the favorites list
+        return Favourite::create([
+            'user_id' => $userId,
+            'movie_id' => $movieId,
+        ]);
     }
 }

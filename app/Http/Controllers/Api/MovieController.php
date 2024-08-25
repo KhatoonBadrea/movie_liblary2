@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Movie;
+use App\Models\Favourite;
 use Illuminate\Http\Request;
 use App\Services\MovieService;
 use Illuminate\Support\Facades\Log;
@@ -196,6 +197,36 @@ class MovieController extends Controller
         } catch (\Exception $e) {
             Log::error('Error in MovieController@rateMovie: ' . $e->getMessage());
             return $this->errorResponse('An error occurred: ' . $e->getMessage(), [], 500);
+        }
+    }
+
+
+    //===========================================addToFavorites============================================================================================================================================
+
+
+    /**
+     * add movie to favourit list
+     *@param Request $request
+     *@param $movieId
+     * @return \Illuminate\Http\JsonRespons
+     */
+
+
+    public function addToFavorites(Request $request, $movieId)
+    {
+        try {
+            $userId = auth()->id();
+            $result = $this->movieServices->addToFavorites($userId, $movieId);
+
+            if (is_string($result)) {
+                return response()->json(['message' => $result], 200);
+            }
+
+            return response()->json(['message' => 'Movie added to favorites successfully.'], 201);
+        } catch (\Exception $e) {
+            Log::error('Error in MovieService@addToFavorites: ' . $e->getMessage());
+
+            return response()->json(['error' => 'An error occurred while adding to favorites.'], 500);
         }
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Movie extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'title',
         'director',
@@ -16,11 +16,17 @@ class Movie extends Model
         'release_year',
         'description'
     ];
-    
-//=============relations
+
+    //=============relations
 
     public function ratings()
-{
-    return $this->hasMany(Rating::class);
-}
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    
+    public function favoredBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
 }

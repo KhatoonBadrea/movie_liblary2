@@ -44,9 +44,15 @@ class User extends Authenticatable
     ];
 
     //=========relations
-    
+
     public function ratings()
-{
-    return $this->hasMany(Rating::class);
-}
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+
+    public function favorites()
+    {
+        return $this->belongsToMany(Movie::class, 'favorites');
+    }
 }
