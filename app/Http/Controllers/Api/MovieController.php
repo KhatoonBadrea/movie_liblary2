@@ -113,8 +113,7 @@ class MovieController extends Controller
     public function show(Movie $movie)
     {
         try {
-            // تحميل الفيلم مع التقييمات والمراجعات المرتبطة به
-            $movie->load('ratings.user'); // تحميل التقييمات مع معلومات المستخدم
+            $movie->load('ratings.user'); 
 
             $movieResource = new movieResource($movie);
 
